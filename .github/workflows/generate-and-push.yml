@@ -50,8 +50,8 @@ jobs:
       - name: Push to KMP repo
         run: |
           git clone https://x-access-token:${SYNC_TOKEN}@github.com/L1ndenbaum/xiehe-multiplatform.git
-          mkdir -p xiehe-multiplatform/composeApp/commonMain/composeResources/
-          rsync -r --delete dist/kmp/ xiehe-multiplatform/composeApp/commonMain/composeResources/
+          mkdir -p xiehe-multiplatform/composeApp/src/commonMain/composeResources/
+          rsync -r --delete dist/kmp/ xiehe-multiplatform/composeApp/src/commonMain/composeResources/
           cd xiehe-multiplatform
           git add -A
           if git diff --cached --quiet; then
