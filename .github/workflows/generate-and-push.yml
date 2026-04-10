@@ -1,0 +1,60 @@
+name: generate i18n dist from source and sync to web and kmp repo
+
+on:
+  push:
+    branches: ["main"]
+    paths: ["source/**/*.yml", "source/**/*.yaml"]
+
+env:
+  SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config --global user.name "L1ndenbaum"
+          git config --global user.email "zhangjianhao2986@gmail.com"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+
+      - name: Install node_modules
+        run: |
+          cd generator && npm install
+
+      - name: Generate Dist
+        run: cd generator && npm run generate
+
+      - name: Push to Web repo
+        run: | 
+          git clone https://x-access-token:${SYNC_TOKEN}@github.com/CarLor02/XieHe-System.git
+          rsync -r --delete dist/web/ XieHe-System/frontend/i18n/locales/
+          cd XieHe-System
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to push for web repo"
+          else
+            git commit -m "i18n files update"
+            git push
+          fi
+
+      - name: Push to KMP repo
+        run: |
+          git clone https://x-access-token:${SYNC_TOKEN}@github.com/L1ndenbaum/xiehe-multiplatform.git
+          rsync -r --delete dist/kmp/ xiehe-multiplatform/composeApp/commonMain/composeResources/
+          cd xiehe-multiplatform
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to push for kmp repo"
+          else
+            git commit -m "i18n files update"
+            git push
+          fi

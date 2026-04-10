@@ -1,0 +1,23 @@
+{
+  "name": "generator",
+  "version": "1.0.0",
+  "description": "Generate web and KMP i18n artifacts from source yaml files.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node --import tsx ./src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test ./test/generator.test.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "yaml": "^2.8.3"
+  }
+}
